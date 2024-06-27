@@ -1,0 +1,129 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:ic="http://ivyteam.ch/jsf/component"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+<h:body>
+	<ui:composition template="/layouts/frame-10-full-width.xhtml">
+		<ui:define name="title">#{ivy.cms.co('/Labels/CMSEditor/name')}</ui:define>
+		<ui:define name="content">
+			<h:outputStylesheet name="layouts/styles/translatinglanguages.css" />
+
+			<h:form id="content-form"
+				onkeypress="if (event.keyCode == 13){return false;}">
+				<h:panelGroup styleClass="p-d-flex p-flex-column">
+					<div class="p-formgrid p-grid ui-fluid p-ai-center">
+						<div class="p-field p-text-left p-col-2">
+							<p:outputLabel value="#{ivy.cms.co('/Labels/Application')}"
+								for="@next" />
+						</div>
+						<div class="p-field p-col-3">
+							<p:selectOneMenu id="app"
+								value="#{cmsEditorBean.selectedAppName}">
+								<f:selectItems value="#{cmsEditorBean.appNames}" />
+								<p:ajax
+									update="content-form:table-cms-keys content-form:cms-values"
+									partialSubmit="true" process="@this"
+									listener="#{cmsEditorBean.onAppChange}" />
+							</p:selectOneMenu>
+						</div>
+						<div class="p-field p-col-7 p-d-flex">
+							<p:inputText id="search-input" value="#{cmsEditorBean.searchKey}"
+								placeholder="#{ivy.cms.co('/Labels/Search')}">
+								<p:ajax event="keyup" listener="#{cmsEditorBean.search}"
+									update="table-cms-keys content-form:cms-values" delay="500"
+									process="@this" partialSubmit="true" />
+							</p:inputText>
+
+							<p:menuButton id="option-button" value="#{ivy.cms.co('/Labels/Options')}"
+								styleClass="p-ml-3">
+								<p:menuitem>
+									<p:selectBooleanCheckbox id="show-todo-checkbox" value="#{cmsEditorBean.showOnlyTodo}"
+										itemLabel="#{ivy.cms.co('/Labels/ShowOnlyTODO')}">
+										<p:ajax
+											update="content-form:table-cms-keys content-form:cms-values"
+											listener="#{cmsEditorBean.search}" process="@this"
+											partialSubmit="true" />
+									</p:selectBooleanCheckbox>
+								</p:menuitem>
+							</p:menuButton>
+						</div>
+					</div>
+
+					<div class="p-formgrid p-grid ui-fluid p-ai-center">
+						<div class="p-field p-text-left p-col-2">
+							<p:outputLabel value="#{ivy.cms.co('/Labels/SelectedCMS')}"
+								for="@next" />
+						</div>
+						<div class="p-field p-col-10">
+							<p:inputText id="selected-url" disabled="true"
+								value="#{cmsEditorBean.selectedCms.uri}" />
+						</div>
+					</div>
+
+					<div>
+						<h:panelGroup styleClass="panel left">
+							<p:dataTable id="table-cms-keys"
+								value="#{cmsEditorBean.filteredCMSKeys}" var="entry"
+								selection="#{cmsEditorBean.selectedCms}" selectionMode="single"
+								rowKey="#{entry.uri}" scrollable="true" scrollHeight="100%"
+								paginator="true" rows="30" paginatorPosition="bottom"
+								pageLinks="5"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+								rowsPerPageTemplate="20,30,40">
+								<p:column>
+									<h:outputText id="cms-uri" value="#{entry.uri}" />
+									<p:tooltip for="@previous" value="#{entry.uri}" position="top" />
+								</p:column>
+								<p:ajax event="rowSelect" process="@this" partialSubmit="true"
+									listener="#{cmsEditorBean.rowSelect}" />
+							</p:dataTable>
+						</h:panelGroup>
+						<h:panelGroup styleClass="panel right">
+							<p:accordionPanel id="cms-values" multiple="true"
+								widgetVar="multiple"
+								value="#{cmsEditorBean.selectedCms.contents}"
+								activeIndex="#{cmsEditorBean.activeIndex}" var="language">
+								<p:tab id="cms-values-tab" title="#{language.locale.displayLanguage}">
+									<h:panelGroup styleClass="ui-fluid p-mb-0 p-pb-0">
+										<ic:com.axonivy.utils.cmseditor.component.Editor
+											content="#{language.content}"
+											languageIndex="#{language.index}"
+											managedBean="#{cmsEditorBean}" />
+									</h:panelGroup>
+								</p:tab>
+							</p:accordionPanel>
+						</h:panelGroup>
+					</div>
+				</h:panelGroup>
+				<div class="command-btns p-pt-2">
+					<p:commandButton id="cancel-button" widgetVar="cancel-button"
+						value="#{ivy.cms.co('/Labels/Cancel')}"
+						actionListener="#{logic.close}" process="@this" immediate="true"
+						styleClass="p-ml-2 p-mr-2 ui-button-flat" />
+					<p:commandButton id="downloadButton"
+						value="#{ivy.cms.co('/Labels/Download')}" ajax="false"
+						actionListener="#{cmsEditorBean.handleBeforeDownloadFile}"
+						icon="pi pi-arrow-down" styleClass="mr-2"
+						onclick="PrimeFaces.monitorDownload(function() {}, stop);">
+						<p:fileDownload value="#{cmsEditorBean.fileDownload}" />
+					</p:commandButton>
+					<p:remoteCommand name="stop" global="false" partialSubmit="true"
+						process="@this" update="content-form"
+						actionListener="#{cmsEditorBean.downloadFinished}" />
+				</div>
+			</h:form>
+			<script type="text/javascript">
+				window.isHideTaskName = false;
+				window.isHideTaskAction = true;
+				window.isHideCaseInfo = true;
+				window.isWorkingOnATask = false;
+			</script>
+		</ui:define>
+	</ui:composition>
+</h:body>
+
+</html>

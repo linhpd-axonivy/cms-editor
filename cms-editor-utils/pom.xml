@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.axonivy.utils.cmseditor</groupId>
+	<artifactId>cms-editor</artifactId>
+	<version>10.0.1-SNAPSHOT</version>
+	<packaging>iar</packaging>
+	<repositories>
+		<repository>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>maven.axonivy.com</id>
+			<url>https://maven.axonivy.com</url>
+		</repository>
+		<repository>
+			<id>AsposeJavaAPI</id>
+			<name>Aspose Java API</name>
+			<url>https://releases.aspose.com/java/repo/</url>
+		</repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.17.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.aspose</groupId>
+			<artifactId>aspose-cells</artifactId>
+			<version>24.2</version>
+		</dependency>
+	</dependencies>
+
+	<properties>
+		<ivy.engine.version>10.0.18</ivy.engine.version>
+		<build.plugin.version>10.0.16</build.plugin.version>
+	</properties>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+
+			<plugin>
+				<groupId>com.axonivy.ivy.ci</groupId>
+				<artifactId>project-build-plugin</artifactId>
+				<version>${build.plugin.version}</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>annotation-proc</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>compileProject</goal>
+						</goals>
+						<configuration>
+							<compilerOptions>
+								<compilerOption>-ApersistenceXml=${basedir}/src/META-INF/persistence.xml</compilerOption>
+								<compilerOption>-s</compilerOption>
+								<compilerOption>${basedir}/src_generated</compilerOption>
+								<compilerOption>-proc:only</compilerOption>
+							</compilerOptions>
+							<skipScriptValidation>true</skipScriptValidation>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<ivyVersion>${ivy.engine.version}</ivyVersion>
+					<compilerOptions>
+						<compilerOption>-proc:none</compilerOption>
+					</compilerOptions>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${basedir}/src_generated</directory>
+							<followSymlinks>false</followSymlinks>
+							<useDefaultExcludes>true</useDefaultExcludes>
+							<includes>
+								<include>**/*.java</include>
+							</includes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>

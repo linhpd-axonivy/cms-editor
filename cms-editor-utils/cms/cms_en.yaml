@@ -1,0 +1,15 @@
+Labels:
+  Application: Application
+  Cancel: Cancel
+  CmsDownloaded: CMS translation downloaded successfully. Check you donwload history
+  Download: Download
+  Message: Message
+  Options: Options
+  Search: Search
+  SelectedCMS: Selected CMS
+  ShowOnlyTODO: Show only TODO
+  SomeFieldsHaveNotBeenSaved: Some fields have not been saved yet
+Processes:
+  CMSEditor:
+    description: Use this process to translate the current CMS and export it to an Excel file.
+    name: CMS Editor

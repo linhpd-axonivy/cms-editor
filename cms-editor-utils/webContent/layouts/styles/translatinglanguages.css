@@ -1,0 +1,25 @@
+/*width for dropdown  */
+.ui-menu {
+    width: 300px; /* Adjust the width as needed */
+}
+
+.panel {
+	float: left; /* Adjust based on desired layout (horizontal/vertical) */
+	border: 1px solid #ccc;
+	padding: 0;
+	height: 85vh;
+	display: block;
+}
+
+.right {
+	width: 50%;
+	overflow: scroll;
+}
+
+.left {
+	width: 50%
+}
+
+.ui-datatable table thead tr {
+	display: none;
+}

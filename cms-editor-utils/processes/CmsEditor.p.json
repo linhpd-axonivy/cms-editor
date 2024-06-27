@@ -1,0 +1,42 @@
+{
+  "format" : "10.0.0",
+  "id" : "18DE86A37D77D574",
+  "config" : {
+    "data" : "com.axonivy.utils.cmseditor.Data"
+  },
+  "elements" : [ {
+      "id" : "f0",
+      "type" : "RequestStart",
+      "name" : "start.ivp",
+      "config" : {
+        "callSignature" : "start",
+        "startDescription" : "<%=ivy.cms.co(\"/Processes/CMSEditor/description\")%>",
+        "outLink" : "start.ivp",
+        "startName" : "<%=ivy.cms.co(\"/Processes/CMSEditor/name\")%>",
+        "case" : { }
+      },
+      "visual" : {
+        "at" : { "x" : 96, "y" : 64 }
+      },
+      "connect" : { "id" : "f4", "to" : "f3" }
+    }, {
+      "id" : "f1",
+      "type" : "TaskEnd",
+      "visual" : {
+        "at" : { "x" : 392, "y" : 64 }
+      }
+    }, {
+      "id" : "f3",
+      "type" : "DialogCall",
+      "name" : "Cms editor",
+      "config" : {
+        "dialogId" : "com.axonivy.utils.cmseditor.CmsEditor",
+        "startMethod" : "start()"
+      },
+      "visual" : {
+        "at" : { "x" : 253, "y" : 64 },
+        "size" : { "width" : 155, "height" : 60 }
+      },
+      "connect" : { "id" : "f2", "to" : "f1" }
+    } ]
+}

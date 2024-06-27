@@ -1,0 +1,75 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:cc="http://xmlns.jcp.org/jsf/composite" xmlns:ic="http://ivyteam.ch/jsf/component"
+	xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<cc:interface componentType="IvyComponent">
+	<cc:attribute name="managedBean" required="true" />
+	<cc:attribute name="content" required="true" />
+</cc:interface>
+
+<cc:implementation>
+	<h:outputStylesheet name="suneditor/css/suneditor.min.css" />
+	<h:outputScript name="suneditor/suneditor.min.js" target="head" />
+	<p:inplace>
+		<f:facet name="output">
+			<h:outputText value="#{cc.attrs.content}" escape="false" />
+		</f:facet>
+		<f:facet name="input">
+			<p:inputTextarea id="content-editor-id" value="#{cc.attrs.content}"
+				styleClass="js-article-content-editor p-d-none" />
+		</f:facet>
+	</p:inplace>
+
+	<p:remoteCommand autoRun="true" async="true"
+		onstart="initSunEditor(#{cc.attrs.languageIndex}, '#{cc.clientId}:content-editor-id');" global="false"
+		partialSubmit="true" immediate="true" process="@none" update="@none" />
+	<p:remoteCommand name="saveValue" global="false" partialSubmit="true" process="@this"
+		actionListener="#{cc.attrs.managedBean.save}" />
+	<p:remoteCommand name="setValueChanged" global="false" partialSubmit="true" process="@this"
+		actionListener="#{cc.attrs.managedBean.setValueChanged}" />
+
+	<script type="text/javascript">
+		function initSunEditor(languageIndex, editorId) {
+			const editor = SUNEDITOR.create(document.getElementById(editorId), {
+				buttonList: [
+					['font', 'fontSize', 'formatBlock'],
+					['paragraphStyle', 'blockquote'],
+					['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
+					['fontColor', 'hiliteColor', 'textStyle'],
+					['removeFormat'],
+					['outdent', 'indent'],
+					['align', 'list', 'lineHeight', 'horizontalRule'],
+					['table', 'link'],
+					['fullScreen'],
+					['undo', 'redo'],
+					['save']
+				],
+				attributesWhitelist: {
+					'all': 'style|width|height|role|border|cellspacing|cellpadding|src|alt|href|target'
+				},
+			});
+
+			editor.onChange = (contents, core) => {
+				setValueChanged([{
+					name: 'languageIndex',
+					value: languageIndex
+				}]);
+			};
+
+
+
+			editor.onSave = (contents, core) => {
+				saveValue([{
+					name: 'content',
+					value: contents
+				}, {
+					name: 'languageIndex',
+					value: languageIndex
+				}]);
+			};
+		};
+	</script>
+</cc:implementation>
+
+</html>
