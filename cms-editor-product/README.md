@@ -1,19 +1,9 @@
-# Approval Decision Utils
 
-Axon Ivy's Approval Decision Utils provides a standardized approach for implementing your approvals in any business process. This component:
-
-- Gives you a standard pattern to make decisions and confirmations.
-- Implements a comment function for better documentation.
-- Provides a clear view of the ongoing approval history to meet regulatory, compliance, and transparency requirements.
-- Supports you with an easy-to-copy demo implementation to reduce your integration effort.
-
-## Demo
-
-### 1. CMS editor process start:
+# 1. CMS editor process start:
 
 ![](./images/1-cms-editor-process.png)
 
-### 2. CMS editor main page:
+# 2. CMS editor main page:
 
 1. Application Selector: Each Ivy engine can contain multiple applications. First, choose the application you want to work on.
 2. Search Input: You can enter text to search by URI and content. The search is case-insensitive.
