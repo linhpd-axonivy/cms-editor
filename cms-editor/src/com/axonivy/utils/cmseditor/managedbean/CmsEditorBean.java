@@ -53,6 +53,7 @@ public class CmsEditorBean implements Serializable {
 	private static final String CMS_EDITOR_UTILS_PMV_NAME = "cms-editor";
 
 	private Map<String, Map<String, PmvCms>> appPmvCmsMap;
+	private Map<String, Map<String, SavedCms>> savedCmsMap;
 	private List<Cms> cmsList;
 	private List<Cms> filteredCMSList;
 	private Cms lastSelectedCms;
@@ -64,6 +65,7 @@ public class CmsEditorBean implements Serializable {
 
 	@PostConstruct
 	private void init() {
+		savedCmsMap = SavedCmsRepo.findAll();
 		appPmvCmsMap = new HashMap<>();
 		for (var app : IApplicationRepository.instance().all()) {
 			app.getProcessModels().stream().filter(processModel -> isActive(processModel))
@@ -156,7 +158,7 @@ public class CmsEditorBean implements Serializable {
 			var locale = locales.get(i);
 			var value = contentObject.value().get(locale);
 			var valueString = value != null ? value.read().string() : StringUtils.EMPTY;
-			var savedCms = SavedCmsRepo.findSavedCms(contentObject.uri(), locale);
+			var savedCms = findSavedCms(contentObject.uri(), locale);
 			if (savedCms != null) {
 				if (valueString.equals(savedCms.getOriginalContent())) {
 					valueString = savedCms.getNewContent();
@@ -193,6 +195,10 @@ public class CmsEditorBean implements Serializable {
 		return true;
 	}
 
+	private SavedCms findSavedCms(String uri, Locale locale) {
+		return savedCmsMap.getOrDefault(uri, new HashMap<>()).getOrDefault(locale.toString(), null);
+	}
+
 	public void save() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		Map<String, String> requestParamMap = context.getExternalContext().getRequestParameterMap();
@@ -201,7 +207,7 @@ public class CmsEditorBean implements Serializable {
 		var cmsContent = selectedCms.getContents().stream().filter(value -> value.getIndex() == languageIndex).findAny().get();
 		cmsContent.saveContent(content);
 		var locale = cmsContent.getLocale();
-		var savedCms = SavedCmsRepo.findSavedCms(selectedCms.getUri(), locale);
+		var savedCms = findSavedCms(selectedCms.getUri(), locale);
 		if (savedCms != null) {
 			savedCms.setNewContent(cmsContent.getContent());
 		} else {

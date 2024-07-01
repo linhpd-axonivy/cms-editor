@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<userConfig>
+    <user>
+        <username>es_tran</username>
+        <password>es_tran</password>
+    </user>
+    <user>
+        <username>tr_tran</username>
+        <password>tr_tran</password>
+    </user>
+</userConfig>
