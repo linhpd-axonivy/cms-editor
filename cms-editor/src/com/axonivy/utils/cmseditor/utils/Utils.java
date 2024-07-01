@@ -14,7 +14,7 @@ import org.jsoup.nodes.Entities.EscapeMode;
 public class Utils {
 
 	private static final String HTML_TAG_PATTERN = "<.*?>";
-	private static final String REMOVE_HTML_TAG_PATTERN = "<[^>]*>";
+	private static final String REMOVE_HTML_TAG_PATTERN = "<[^>]+>";
 	private static final String TABLE_ELEMENT = "table";
 
 	public static String reformatHTML(String originalContent, String content) {
