@@ -1,8 +1,10 @@
 package com.axonivy.utils.cmseditor.utils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
@@ -28,11 +30,17 @@ public class Utils {
 	}
 
 	public static boolean containsHtmlTag(String str) {
+		if (Objects.isNull(str)) {
+			return false;
+		}
 		Pattern pattern = Pattern.compile(HTML_TAG_PATTERN);
 		return pattern.matcher(str).find();
 	}
 
 	public static String removeTags(String text) {
+		if (Objects.isNull(text)) {
+			return StringUtils.EMPTY;
+		}
 		Pattern pattern = Pattern.compile(REMOVE_HTML_TAG_PATTERN);
 		return pattern.matcher(text).replaceAll("");
 	}
