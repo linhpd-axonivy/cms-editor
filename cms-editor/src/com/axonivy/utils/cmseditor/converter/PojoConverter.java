@@ -3,7 +3,6 @@ package com.axonivy.utils.cmseditor.converter;
 import java.util.Map;
 
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
@@ -35,9 +34,9 @@ public class PojoConverter implements Converter {
 	@Override
 	public String getAsString(FacesContext context, UIComponent component, Object item) throws ConverterException {
 		if (item != null && !isEmptyString(item)) {
-			Map<String, Object> viewMap = getViewMap(context);
-			String hash = String.valueOf(item.hashCode());
-			String mapKey = String.format(MAP_KEY_TEMPLATE, component.getId(), hash);
+			var viewMap = getViewMap(context);
+			var hash = String.valueOf(item.hashCode());
+			var mapKey = String.format(MAP_KEY_TEMPLATE, component.getId(), hash);
 			viewMap.put(mapKey, item);
 
 			return hash;
@@ -54,8 +53,8 @@ public class PojoConverter implements Converter {
 	public Object getAsObject(FacesContext context, UIComponent component, String selectedvalue) {
 		if (selectedvalue != null && selectedvalue.length() > 0) {
 
-			String mapKey = String.format(MAP_KEY_TEMPLATE, component.getId(), selectedvalue);
-			Map<String, Object> viewMap = getViewMap(context);
+			var mapKey = String.format(MAP_KEY_TEMPLATE, component.getId(), selectedvalue);
+			var viewMap = getViewMap(context);
 
 			return viewMap.get(mapKey);
 		}
@@ -67,7 +66,7 @@ public class PojoConverter implements Converter {
 	}
 
 	private Map<String, Object> getViewMap(FacesContext context) {
-		UIViewRoot viewRoot = context.getViewRoot();
+		var viewRoot = context.getViewRoot();
 		return viewRoot.getViewMap();
 	}
 }

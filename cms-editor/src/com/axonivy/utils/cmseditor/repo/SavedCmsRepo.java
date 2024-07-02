@@ -12,8 +12,5 @@ public class SavedCmsRepo {
 	public static Map<String, Map<String, SavedCms>> findAll() {
 		return Ivy.repo().search(SavedCms.class).execute().getAll().stream()
 				.collect(Collectors.groupingBy(SavedCms::getUri, Collectors.toMap(SavedCms::getLocale, cms -> cms)));
-//				.textFields("uri").containsAllWords(requireNonNull(uri, "uri must not null"))
-//				.and().textField("locale").containsAllWords(requireNonNull(locale, "locale must not null").toString())
-//				.execute().getFirst();
 	}
 }

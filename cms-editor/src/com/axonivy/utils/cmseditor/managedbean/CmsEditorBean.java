@@ -115,7 +115,7 @@ public class CmsEditorBean implements Serializable {
 	private void showHaveNotBeenSavedDialog() {
 		var editingCmsList = lastSelectedCms.getContents().stream().filter(CmsContent::isEditting)
 				.map(CmsContent::getLocale).map(Locale::getDisplayLanguage).collect(Collectors.toList());
-		String detail = Utils.convertListToHTMLList(editingCmsList);
+		var detail = Utils.convertListToHTMLList(editingCmsList);
 		showDialog(cms().co("/Labels/SomeFieldsHaveNotBeenSaved"), detail);
 	}
 
@@ -138,7 +138,7 @@ public class CmsEditorBean implements Serializable {
 			if (child.children().size() == 0) {
 				// just allow string cms. not file
 				if (StringUtils.isBlank(child.meta().fileExtension())) {
-					Cms cms = convertToCms(child, locales);
+					var cms = convertToCms(child, locales);
 					if (cms.getContents() != null) {
 						var contents = pmvCmsMap.getOrDefault(pmvName, new PmvCms(pmvName, locales));
 						contents.addCms(cms);
@@ -152,9 +152,9 @@ public class CmsEditorBean implements Serializable {
 	}
 
 	private Cms convertToCms(ContentObject contentObject, List<Locale> locales) {
-		Cms cms = new Cms();
+		var cms = new Cms();
 		cms.setUri(contentObject.uri());
-		for (int i = 0; i < locales.size(); i++) {
+		for (var i = 0; i < locales.size(); i++) {
 			var locale = locales.get(i);
 			var value = contentObject.value().get(locale);
 			var valueString = value != null ? value.read().string() : StringUtils.EMPTY;
@@ -200,8 +200,8 @@ public class CmsEditorBean implements Serializable {
 	}
 
 	public void save() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		Map<String, String> requestParamMap = context.getExternalContext().getRequestParameterMap();
+		var context = FacesContext.getCurrentInstance();
+		var requestParamMap = context.getExternalContext().getRequestParameterMap();
 		var languageIndex = valueOf(requestParamMap.get("languageIndex"));
 		var content = requestParamMap.get("content");
 		var cmsContent = selectedCms.getContents().stream().filter(value -> value.getIndex() == languageIndex).findAny().get();
@@ -218,8 +218,8 @@ public class CmsEditorBean implements Serializable {
 	}
 
 	public void setValueChanged() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		Map<String, String> requestParamMap = context.getExternalContext().getRequestParameterMap();
+		var context = FacesContext.getCurrentInstance();
+		var requestParamMap = context.getExternalContext().getRequestParameterMap();
 		var languageIndex = valueOf(requestParamMap.get("languageIndex"));
 		selectedCms.getContents().get(languageIndex).setEditting(true);
 	}
