@@ -9,8 +9,16 @@ import ch.ivyteam.ivy.environment.Ivy;
 
 public class SavedCmsRepo {
 
-	public static Map<String, Map<String, SavedCms>> findAll() {
-		return Ivy.repo().search(SavedCms.class).execute().getAll().stream()
-				.collect(Collectors.groupingBy(SavedCms::getUri, Collectors.toMap(SavedCms::getLocale, cms -> cms)));
-	}
+  public static Map<String, Map<String, SavedCms>> findAll() {
+    return Ivy.repo().search(SavedCms.class).execute().getAll().stream()
+        .collect(Collectors.groupingBy(SavedCms::getUri, Collectors.toMap(SavedCms::getLocale, cms -> cms)));
+  }
+
+  public static void delete(SavedCms savedCms) {
+    Ivy.repo().delete(savedCms);
+  }
+
+  public static void save(SavedCms savedCms) {
+    Ivy.repo().save(savedCms);
+  }
 }

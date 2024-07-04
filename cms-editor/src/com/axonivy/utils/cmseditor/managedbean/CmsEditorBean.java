@@ -2,8 +2,10 @@ package com.axonivy.utils.cmseditor.managedbean;
 
 import static ch.ivyteam.ivy.environment.Ivy.cms;
 import static java.lang.Integer.valueOf;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static javax.faces.application.FacesMessage.SEVERITY_INFO;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.Serializable;
@@ -41,16 +43,20 @@ import ch.ivyteam.ivy.application.IProcessModel;
 import ch.ivyteam.ivy.application.IProcessModelVersion;
 import ch.ivyteam.ivy.application.app.IApplicationRepository;
 import ch.ivyteam.ivy.cm.ContentObject;
+import ch.ivyteam.ivy.cm.ContentObjectReader;
+import ch.ivyteam.ivy.cm.ContentObjectValue;
 import ch.ivyteam.ivy.cm.exec.ContentManagement;
-import ch.ivyteam.ivy.environment.Ivy;
 
 @ViewScoped
 @ManagedBean
 public class CmsEditorBean implements Serializable {
-
 	private static final long serialVersionUID = 1L;
+
+	private static final String CONTENT_FORM_SELECTED_URL = "content-form:selected-url";
+	private static final String CONTENT_FORM_CMS_VALUES = "content-form:cms-values";
+	private static final String CONTENT_FORM_TABLE_CMS_KEYS = "content-form:table-cms-keys";
 	private static final String TODO = "TODO";
-	private static final String CMS_EDITOR_UTILS_PMV_NAME = "cms-editor";
+	private static final String CMS_EDITOR_PMV_NAME = "cms-editor";
 
 	private Map<String, Map<String, PmvCms>> appPmvCmsMap;
 	private Map<String, Map<String, SavedCms>> savedCmsMap;
@@ -99,7 +105,7 @@ public class CmsEditorBean implements Serializable {
 		if (isEditing()) {
 			selectedCms = lastSelectedCms; // Revert to last valid selection
 		} else {
-			PF.current().ajax().update("content-form:cms-values", "content-form:selected-url");
+			PF.current().ajax().update(CONTENT_FORM_CMS_VALUES, CONTENT_FORM_SELECTED_URL);
 		}
 	}
 
@@ -107,7 +113,7 @@ public class CmsEditorBean implements Serializable {
 		var isEditing = lastSelectedCms != null && lastSelectedCms.isEditing();
 		if (isEditing) {
 			showHaveNotBeenSavedDialog();
-			PF.current().ajax().update("content-form:table-cms-keys");
+			PF.current().ajax().update(CONTENT_FORM_TABLE_CMS_KEYS);
 		}
 		return isEditing;
 	}
@@ -126,7 +132,7 @@ public class CmsEditorBean implements Serializable {
 
 	public void getAllChildren(String appName, String pmvName, ContentObject contentObject, List<Locale> locales) {
 		// Exclude the CMS of it self
-		if (pmvName.equals(CMS_EDITOR_UTILS_PMV_NAME)) {
+		if (pmvName.equals(CMS_EDITOR_PMV_NAME)) {
 			return;
 		}
 		if (contentObject.isRoot()) {
@@ -157,13 +163,13 @@ public class CmsEditorBean implements Serializable {
 		for (var i = 0; i < locales.size(); i++) {
 			var locale = locales.get(i);
 			var value = contentObject.value().get(locale);
-			var valueString = value != null ? value.read().string() : StringUtils.EMPTY;
+			var valueString = ofNullable(value).map(ContentObjectValue::read).map(ContentObjectReader::string).orElse(EMPTY);
 			var savedCms = findSavedCms(contentObject.uri(), locale);
 			if (savedCms != null) {
 				if (valueString.equals(savedCms.getOriginalContent())) {
 					valueString = savedCms.getNewContent();
 				} else {
-					Ivy.repo().delete(savedCms);
+                  SavedCmsRepo.delete(savedCms);
 				}
 			}
 			cms.addContent(new CmsContent(i, locale, valueString));
@@ -214,7 +220,7 @@ public class CmsEditorBean implements Serializable {
 			savedCms = new SavedCms(selectedCms.getUri(), locale.toString(),
 					cmsContent.getOriginalContent(), cmsContent.getContent());
 		}
-		Ivy.repo().save(savedCms);
+        SavedCmsRepo.save(savedCms);
 	}
 
 	public void setValueChanged() {

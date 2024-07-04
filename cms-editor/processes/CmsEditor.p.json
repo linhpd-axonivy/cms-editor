@@ -16,7 +16,8 @@
         "case" : { }
       },
       "visual" : {
-        "at" : { "x" : 96, "y" : 64 }
+        "at" : { "x" : 96, "y" : 64 },
+        "icon" : "res:/webContent/icons/logo.png?small"
       },
       "connect" : { "id" : "f4", "to" : "f3" }
     }, {
@@ -35,7 +36,8 @@
       },
       "visual" : {
         "at" : { "x" : 253, "y" : 64 },
-        "size" : { "width" : 155, "height" : 60 }
+        "size" : { "width" : 155, "height" : 60 },
+        "icon" : "res:/webContent/icons/logo.png"
       },
       "connect" : { "id" : "f2", "to" : "f1" }
     } ]
