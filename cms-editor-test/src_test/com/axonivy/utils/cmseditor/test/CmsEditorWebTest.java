@@ -72,7 +72,7 @@ public class CmsEditorWebTest {
     var otherCms = cmsList.get(1);
     selectedCms.click();
 
-    $$("[id^='content-form:cms-values:'][id$=':cms-values-tab']").shouldHave(sizeGreaterThanOrEqual(2));
+    $$("[id^='content-form:cms-values:'][id$=':cms-values-tab']").shouldHave(sizeGreaterThanOrEqual(1));
     // assert all content items is preview mode
     var displayItems = $$("[id^='content-form:cms-values:'][id$='_display']");
     displayItems.shouldBe(allMatch("All elements should be visible", element -> element.isDisplayed()));

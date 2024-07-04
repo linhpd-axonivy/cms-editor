@@ -37,10 +37,11 @@
 									process="@this" partialSubmit="true" />
 							</p:inputText>
 
-							<p:menuButton id="option-button" value="#{ivy.cms.co('/Labels/Options')}"
-								styleClass="p-ml-3">
+							<p:menuButton id="option-button"
+								value="#{ivy.cms.co('/Labels/Options')}" styleClass="p-ml-3">
 								<p:menuitem>
-									<p:selectBooleanCheckbox id="show-todo-checkbox" value="#{cmsEditorBean.showOnlyTodo}"
+									<p:selectBooleanCheckbox id="show-todo-checkbox"
+										value="#{cmsEditorBean.showOnlyTodo}"
 										itemLabel="#{ivy.cms.co('/Labels/ShowOnlyTODO')}">
 										<p:ajax
 											update="content-form:table-cms-keys content-form:cms-values"
@@ -87,7 +88,8 @@
 								widgetVar="multiple"
 								value="#{cmsEditorBean.selectedCms.contents}"
 								activeIndex="#{cmsEditorBean.activeIndex}" var="language">
-								<p:tab id="cms-values-tab" title="#{language.locale.displayLanguage}">
+								<p:tab id="cms-values-tab"
+									title="#{language.locale.displayLanguage}">
 									<h:panelGroup styleClass="ui-fluid p-mb-0 p-pb-0">
 										<ic:com.axonivy.utils.cmseditor.component.Editor
 											content="#{language.content}"
