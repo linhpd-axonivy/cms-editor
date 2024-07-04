@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,14 +16,16 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-import com.aspose.cells.SaveFormat;
-import com.aspose.cells.Workbook;
 import com.axonivy.utils.cmseditor.model.Cms;
 import com.axonivy.utils.cmseditor.model.CmsContent;
 import com.axonivy.utils.cmseditor.model.PmvCms;
+
+import ch.ivyteam.ivy.environment.Ivy;
 
 public class CmsFileUtils {
 
@@ -42,27 +45,29 @@ public class CmsFileUtils {
       headers.add(URI_HEADER);
       headers.addAll(entry.getValue().getLocales().stream().map(Locale::getLanguage).filter(StringUtils::isNotBlank)
           .collect(toList()));
-      var workbook = new Workbook(SaveFormat.XLSX);
-      var worksheet = workbook.getWorksheets().get(0); // Assuming only one worksheet
-      worksheet.setName(SHEET_NAME);
-      // start save data first
-      for (var rowCount = 1; rowCount <= cmsList.size(); rowCount++) {
-        var row = worksheet.getCells().getRows().get(rowCount);
-        // second row is first cms
-        var cms = cmsList.get(rowCount - 1);
+      var workbook = new XSSFWorkbook();
+      var worksheet = workbook.createSheet(SHEET_NAME);
+
+      // save header
+      var headerRow = worksheet.createRow(0);
+      for (var column = 0; column < headers.size(); column++) {
+        var cell = headerRow.createCell(column);
+        cell.setCellValue(headers.get(column));
+      }
+
+      // start save data
+      for (var rowCount = 0; rowCount < cmsList.size(); rowCount++) {
+        var row = worksheet.createRow(rowCount + 1); // second row is first cms
+        var cms = cmsList.get(rowCount);
         for (var columnCount = 0; columnCount < headers.size(); columnCount++) {
+          var cell = row.createCell(columnCount);
           // set uri
           if (columnCount == 0) {
-            row.get(columnCount).setValue(cms.getUri());
+            cell.setCellValue(cms.getUri());
           } else {
-            row.get(columnCount).setValue(getContentValue(cms, headers.get(columnCount)));
+            cell.setCellValue(getContentValue(cms, headers.get(columnCount)));
           }
         }
-      }
-      // save header
-      var row = worksheet.getCells().getRows().get(0);
-      for (var column = 0; column < headers.size(); column++) {
-        row.get(column).setValue(headers.get(column));
       }
 
       workBooks.put(entry.getKey(), workbook);
@@ -94,7 +99,11 @@ public class CmsFileUtils {
     } finally {
       workbooks.forEach((pmv, workbook) -> {
         if (workbook != null) {
-          workbook.dispose();
+          try {
+            workbook.close();
+          } catch (IOException e) {
+            Ivy.log().error("Error when close workbook", e);
+          }
         }
       });
     }
@@ -102,7 +111,7 @@ public class CmsFileUtils {
 
   private static byte[] convertWorkbookToByteArray(Workbook workbook) throws Exception {
     try (var outputStream = new ByteArrayOutputStream()) {
-      workbook.save(outputStream, SaveFormat.XLSX);
+      workbook.write(outputStream);
       return outputStream.toByteArray();
     }
   }

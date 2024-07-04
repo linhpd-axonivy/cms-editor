@@ -22,7 +22,6 @@
 
 	<build>
 		<plugins>
-
 			<plugin>
 				<groupId>com.axonivy.ivy.ci</groupId>
 				<artifactId>project-build-plugin</artifactId>

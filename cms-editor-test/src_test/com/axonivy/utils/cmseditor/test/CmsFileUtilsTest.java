@@ -10,11 +10,12 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.primefaces.model.StreamedContent;
 
-import com.aspose.cells.Workbook;
 import com.axonivy.utils.cmseditor.model.Cms;
 import com.axonivy.utils.cmseditor.model.CmsContent;
 import com.axonivy.utils.cmseditor.model.PmvCms;
@@ -60,7 +61,7 @@ public class CmsFileUtilsTest {
   @Test
   public void testConvertToZip() throws Exception {
     Map<String, Workbook> workbooks = new HashMap<>();
-    Workbook workbook = new Workbook();
+    Workbook workbook = new XSSFWorkbook();
     workbooks.put("testKey", workbook);
 
     StreamedContent result = CmsFileUtils.convertToZip("testApp", workbooks);
