@@ -69,8 +69,12 @@
 
 
 			editor.onSave = (contents, core) => {
+				if(core.functions.getText().trim().length === 0){
+					core.functions.noticeOpen("The content must not be empty.");
+					return;
+				}
 				saveValue([{
-					name: 'content',
+					name: 'contents',
 					value: contents
 				}, {
 					name: 'languageIndex',

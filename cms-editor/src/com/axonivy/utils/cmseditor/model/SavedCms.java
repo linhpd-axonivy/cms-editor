@@ -60,7 +60,7 @@ public class SavedCms implements Serializable {
 
   @Override
   public String toString() {
-    return String.format("%s / %s / %s / %s", uri, locale, originalContent, newContent);
+    return String.format("[%s] [%s] [%s] [%s]", uri, locale, originalContent, newContent);
   }
 
 }

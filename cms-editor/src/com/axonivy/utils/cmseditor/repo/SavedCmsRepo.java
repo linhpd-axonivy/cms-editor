@@ -18,7 +18,7 @@ public class SavedCmsRepo {
     Ivy.repo().delete(savedCms);
   }
 
-  public static void save(SavedCms savedCms) {
-    Ivy.repo().save(savedCms);
+  public static SavedCms save(SavedCms savedCms) {
+    return Ivy.repo().find(Ivy.repo().save(savedCms).getId(), SavedCms.class);
   }
 }

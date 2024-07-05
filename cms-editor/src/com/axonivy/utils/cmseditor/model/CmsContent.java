@@ -52,8 +52,8 @@ public class CmsContent implements Serializable {
     // do nothing. ignore value when submit form, just accept only click save
   }
 
-  public void saveContent(String content) {
-    this.content = Utils.reformatHTML(originalContent, content);
+  public void saveContent(String contents) {
+    this.content = Utils.reformatHTML(originalContent, contents);
     this.isEditting = false;
   }
 

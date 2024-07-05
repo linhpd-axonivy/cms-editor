@@ -50,248 +50,255 @@ import ch.ivyteam.ivy.cm.exec.ContentManagement;
 @ViewScoped
 @ManagedBean
 public class CmsEditorBean implements Serializable {
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	private static final String CONTENT_FORM_SELECTED_URL = "content-form:selected-url";
-	private static final String CONTENT_FORM_CMS_VALUES = "content-form:cms-values";
-	private static final String CONTENT_FORM_TABLE_CMS_KEYS = "content-form:table-cms-keys";
-	private static final String TODO = "TODO";
-	private static final String CMS_EDITOR_PMV_NAME = "cms-editor";
+  private static final String CONTENT_FORM_SELECTED_URL = "content-form:selected-url";
+  private static final String CONTENT_FORM_CMS_VALUES = "content-form:cms-values";
+  private static final String CONTENT_FORM_TABLE_CMS_KEYS = "content-form:table-cms-keys";
+  private static final String TODO = "TODO";
+  private static final String CMS_EDITOR_PMV_NAME = "cms-editor";
 
-	private Map<String, Map<String, PmvCms>> appPmvCmsMap;
-	private Map<String, Map<String, SavedCms>> savedCmsMap;
-	private List<Cms> cmsList;
-	private List<Cms> filteredCMSList;
-	private Cms lastSelectedCms;
-	private Cms selectedCms;
-	private String selectedAppName;
-	private String searchKey;
-	private boolean isShowOnlyTodo;
-	private StreamedContent fileDownload;
+  private Map<String, Map<String, PmvCms>> appPmvCmsMap;
+  private Map<String, Map<String, SavedCms>> savedCmsMap;
+  private List<Cms> cmsList;
+  private List<Cms> filteredCMSList;
+  private Cms lastSelectedCms;
+  private Cms selectedCms;
+  private String selectedAppName;
+  private String searchKey;
+  private boolean isShowOnlyTodo;
+  private StreamedContent fileDownload;
 
-	@PostConstruct
-	private void init() {
-		savedCmsMap = SavedCmsRepo.findAll();
-		appPmvCmsMap = new HashMap<>();
-		for (var app : IApplicationRepository.instance().all()) {
-			app.getProcessModels().stream().filter(processModel -> isActive(processModel))
-					.map(IProcessModel::getReleasedProcessModelVersion).filter(pmv -> isActive(pmv))
-					.forEach(pmv -> getAllChildren(app.getName(), pmv.getName(), ContentManagement.cms(pmv).root(),
-							new ArrayList<>()));
-		}
-		selectedAppName = appPmvCmsMap.keySet().stream().findFirst().orElse(null);
-		onAppChange();
-	}
+  @PostConstruct
+  private void init() {
+    savedCmsMap = SavedCmsRepo.findAll();
+    appPmvCmsMap = new HashMap<>();
+    for (var app : IApplicationRepository.instance().all()) {
+      app.getProcessModels().stream().filter(processModel -> isActive(processModel))
+          .map(IProcessModel::getReleasedProcessModelVersion).filter(pmv -> isActive(pmv))
+          .forEach(pmv -> getAllChildren(app.getName(), pmv.getName(), ContentManagement.cms(pmv).root(),
+              new ArrayList<>()));
+    }
+    selectedAppName = appPmvCmsMap.keySet().stream().findFirst().orElse(null);
+    onAppChange();
+  }
 
-	public void search() {
-		if (isEditing()) {
-			return;
-		}
-		filteredCMSList = cmsList.stream().filter(entry -> isCmsMatchSearchKey(entry, searchKey) && isTodoCms(entry))
-				.collect(Collectors.toList());
-		if (selectedCms != null) {
-			selectedCms = filteredCMSList.stream().filter(entry -> entry.getUri().equals(selectedCms.getUri()))
-					.findAny().orElse(null);
-		}
-	}
+  public void search() {
+    if (isEditing()) {
+      return;
+    }
+    filteredCMSList = cmsList.stream().filter(entry -> isCmsMatchSearchKey(entry, searchKey) && isTodoCms(entry))
+        .collect(Collectors.toList());
+    if (selectedCms != null) {
+      selectedCms = filteredCMSList.stream().filter(entry -> entry.getUri().equals(selectedCms.getUri())).findAny()
+          .orElse(null);
+    }
+  }
 
-	public void onAppChange() {
-		cmsList = Optional.ofNullable(selectedAppName).map(app -> appPmvCmsMap.get(selectedAppName).values().stream()
-				.map(PmvCms::getCmsList).flatMap(List::stream).toList()).orElse(new ArrayList<>());
-		search();
-	}
+  public void onAppChange() {
+    cmsList = Optional.ofNullable(selectedAppName).map(app -> appPmvCmsMap.get(selectedAppName).values().stream()
+        .map(PmvCms::getCmsList).flatMap(List::stream).toList()).orElse(new ArrayList<>());
+    search();
+  }
 
-	public void rowSelect() {
-		if (isEditing()) {
-			selectedCms = lastSelectedCms; // Revert to last valid selection
-		} else {
-			PF.current().ajax().update(CONTENT_FORM_CMS_VALUES, CONTENT_FORM_SELECTED_URL);
-		}
-	}
+  public void rowSelect() {
+    if (isEditing()) {
+      selectedCms = lastSelectedCms; // Revert to last valid selection
+    } else {
+      PF.current().ajax().update(CONTENT_FORM_CMS_VALUES, CONTENT_FORM_SELECTED_URL);
+    }
+  }
 
-	private boolean isEditing() {
-		var isEditing = lastSelectedCms != null && lastSelectedCms.isEditing();
-		if (isEditing) {
-			showHaveNotBeenSavedDialog();
-			PF.current().ajax().update(CONTENT_FORM_TABLE_CMS_KEYS);
-		}
-		return isEditing;
-	}
+  private boolean isEditing() {
+    var isEditing = lastSelectedCms != null && lastSelectedCms.isEditing();
+    if (isEditing) {
+      showHaveNotBeenSavedDialog();
+      PF.current().ajax().update(CONTENT_FORM_TABLE_CMS_KEYS);
+    }
+    return isEditing;
+  }
 
-	private void showHaveNotBeenSavedDialog() {
-		var editingCmsList = lastSelectedCms.getContents().stream().filter(CmsContent::isEditting)
-				.map(CmsContent::getLocale).map(Locale::getDisplayLanguage).collect(Collectors.toList());
-		var detail = Utils.convertListToHTMLList(editingCmsList);
-		showDialog(cms().co("/Labels/SomeFieldsHaveNotBeenSaved"), detail);
-	}
+  private void showHaveNotBeenSavedDialog() {
+    var editingCmsList = lastSelectedCms.getContents().stream().filter(CmsContent::isEditting)
+        .map(CmsContent::getLocale).map(Locale::getDisplayLanguage).collect(Collectors.toList());
+    var detail = Utils.convertListToHTMLList(editingCmsList);
+    showDialog(cms().co("/Labels/SomeFieldsHaveNotBeenSaved"), detail);
+  }
 
-	private void showDialog(String summary, String detail) {
-		var message = new FacesMessage(SEVERITY_INFO, summary, detail);
-		PrimeFaces.current().dialog().showMessageDynamic(message, false);
-	}
+  private void showDialog(String summary, String detail) {
+    var message = new FacesMessage(SEVERITY_INFO, summary, detail);
+    PrimeFaces.current().dialog().showMessageDynamic(message, false);
+  }
 
-	public void getAllChildren(String appName, String pmvName, ContentObject contentObject, List<Locale> locales) {
-		// Exclude the CMS of it self
-		if (pmvName.equals(CMS_EDITOR_PMV_NAME)) {
-			return;
-		}
-		if (contentObject.isRoot()) {
-			locales = contentObject.cms().locales().stream().filter(locale -> isNotBlank(locale.getLanguage()))
-					.collect(toList());
-		}
-		var pmvCmsMap = appPmvCmsMap.getOrDefault(appName, new HashMap<>());
-		for (ContentObject child : contentObject.children()) {
-			if (child.children().size() == 0) {
-				// just allow string cms. not file
-				if (StringUtils.isBlank(child.meta().fileExtension())) {
-					var cms = convertToCms(child, locales);
-					if (cms.getContents() != null) {
-						var contents = pmvCmsMap.getOrDefault(pmvName, new PmvCms(pmvName, locales));
-						contents.addCms(cms);
-						pmvCmsMap.putIfAbsent(pmvName, contents);
-					}
-				}
-			}
-			appPmvCmsMap.putIfAbsent(appName, pmvCmsMap);
-			getAllChildren(appName, pmvName, child, locales);
-		}
-	}
+  public void getAllChildren(String appName, String pmvName, ContentObject contentObject, List<Locale> locales) {
+    // Exclude the CMS of it self
+    if (pmvName.equals(CMS_EDITOR_PMV_NAME)) {
+      return;
+    }
+    if (contentObject.isRoot()) {
+      locales = contentObject.cms().locales().stream().filter(locale -> isNotBlank(locale.getLanguage()))
+          .collect(toList());
+    }
+    var pmvCmsMap = appPmvCmsMap.getOrDefault(appName, new HashMap<>());
+    for (ContentObject child : contentObject.children()) {
+      if (child.children().size() == 0) {
+        // just allow string cms. not file
+        if (StringUtils.isBlank(child.meta().fileExtension())) {
+          var cms = convertToCms(child, locales);
+          if (cms.getContents() != null) {
+            var contents = pmvCmsMap.getOrDefault(pmvName, new PmvCms(pmvName, locales));
+            contents.addCms(cms);
+            pmvCmsMap.putIfAbsent(pmvName, contents);
+          }
+        }
+      }
+      appPmvCmsMap.putIfAbsent(appName, pmvCmsMap);
+      getAllChildren(appName, pmvName, child, locales);
+    }
+  }
 
-	private Cms convertToCms(ContentObject contentObject, List<Locale> locales) {
-		var cms = new Cms();
-		cms.setUri(contentObject.uri());
-		for (var i = 0; i < locales.size(); i++) {
-			var locale = locales.get(i);
-			var value = contentObject.value().get(locale);
-			var valueString = ofNullable(value).map(ContentObjectValue::read).map(ContentObjectReader::string).orElse(EMPTY);
-			var savedCms = findSavedCms(contentObject.uri(), locale);
-			if (savedCms != null) {
-				if (valueString.equals(savedCms.getOriginalContent())) {
-					valueString = savedCms.getNewContent();
-				} else {
-                  SavedCmsRepo.delete(savedCms);
-				}
-			}
-			cms.addContent(new CmsContent(i, locale, valueString));
-		}
-		return cms;
-	}
+  private Cms convertToCms(ContentObject contentObject, List<Locale> locales) {
+    var cms = new Cms();
+    cms.setUri(contentObject.uri());
+    for (var i = 0; i < locales.size(); i++) {
+      var locale = locales.get(i);
+      var value = contentObject.value().get(locale);
+      var valueString = ofNullable(value).map(ContentObjectValue::read).map(ContentObjectReader::string).orElse(EMPTY);
+      var savedCms = findSavedCms(contentObject.uri(), locale);
+      if (savedCms != null) {
+        if (valueString.equals(savedCms.getOriginalContent())) {
+          valueString = savedCms.getNewContent();
+        } else {
+          SavedCmsRepo.delete(savedCms);
+        }
+      }
+      cms.addContent(new CmsContent(i, locale, valueString));
+    }
+    return cms;
+  }
 
-	private static boolean isActive(IProcessModel processModel) {
-		return ActivityState.ACTIVE == processModel.getActivityState();
-	}
+  private static boolean isActive(IProcessModel processModel) {
+    return ActivityState.ACTIVE == processModel.getActivityState();
+  }
 
-	private static boolean isActive(IProcessModelVersion processModelVersion) {
-		return processModelVersion != null && ActivityState.ACTIVE == processModelVersion.getActivityState();
-	}
+  private static boolean isActive(IProcessModelVersion processModelVersion) {
+    return processModelVersion != null && ActivityState.ACTIVE == processModelVersion.getActivityState();
+  }
 
-	private boolean isCmsMatchSearchKey(Cms entry, String searchKey) {
-		if (StringUtils.isNotBlank(searchKey)) {
-			return StringUtils.containsIgnoreCase(entry.getUri(), searchKey) || entry.getContents().stream()
-					.anyMatch(value -> StringUtils.containsIgnoreCase(value.getContent(), searchKey));
-		}
-		return true;
-	}
+  private boolean isCmsMatchSearchKey(Cms entry, String searchKey) {
+    if (StringUtils.isNotBlank(searchKey)) {
+      return StringUtils.containsIgnoreCase(entry.getUri(), searchKey) || entry.getContents().stream()
+          .anyMatch(value -> StringUtils.containsIgnoreCase(value.getContent(), searchKey));
+    }
+    return true;
+  }
 
-	private boolean isTodoCms(Cms entry) {
-		if (isShowOnlyTodo) {
-			return entry.getContents().stream()
-					.anyMatch(value -> StringUtils.startsWithIgnoreCase(value.getContent(), TODO));
-		}
-		return true;
-	}
+  private boolean isTodoCms(Cms entry) {
+    if (isShowOnlyTodo) {
+      return entry.getContents().stream().anyMatch(value -> StringUtils.startsWithIgnoreCase(value.getContent(), TODO));
+    }
+    return true;
+  }
 
-	private SavedCms findSavedCms(String uri, Locale locale) {
-		return savedCmsMap.getOrDefault(uri, new HashMap<>()).getOrDefault(locale.toString(), null);
-	}
+  private SavedCms findSavedCms(String uri, Locale locale) {
+    return savedCmsMap.getOrDefault(uri, new HashMap<>()).getOrDefault(locale.toString(), null);
+  }
 
-	public void save() {
-		var context = FacesContext.getCurrentInstance();
-		var requestParamMap = context.getExternalContext().getRequestParameterMap();
-		var languageIndex = valueOf(requestParamMap.get("languageIndex"));
-		var content = requestParamMap.get("content");
-		var cmsContent = selectedCms.getContents().stream().filter(value -> value.getIndex() == languageIndex).findAny().get();
-		cmsContent.saveContent(content);
-		var locale = cmsContent.getLocale();
-		var savedCms = findSavedCms(selectedCms.getUri(), locale);
-		if (savedCms != null) {
-			savedCms.setNewContent(cmsContent.getContent());
-		} else {
-			savedCms = new SavedCms(selectedCms.getUri(), locale.toString(),
-					cmsContent.getOriginalContent(), cmsContent.getContent());
-		}
-        SavedCmsRepo.save(savedCms);
-	}
+  private void saveCms(SavedCms savedCms) {
+    SavedCms savedCmsResult = SavedCmsRepo.save(savedCms);
+    Map<String, SavedCms> cmsLocaleMap = savedCmsMap.computeIfAbsent(savedCmsResult.getUri(), key -> new HashMap<>());
+    cmsLocaleMap.put(savedCmsResult.getLocale(), savedCmsResult);
+  }
 
-	public void setValueChanged() {
-		var context = FacesContext.getCurrentInstance();
-		var requestParamMap = context.getExternalContext().getRequestParameterMap();
-		var languageIndex = valueOf(requestParamMap.get("languageIndex"));
-		selectedCms.getContents().get(languageIndex).setEditting(true);
-	}
+  public void save() {
+    var context = FacesContext.getCurrentInstance();
+    var requestParamMap = context.getExternalContext().getRequestParameterMap();
+    var languageIndex = valueOf(requestParamMap.get("languageIndex"));
+    selectedCms.getContents().stream().filter(value -> value.getIndex() == languageIndex).findAny()
+        .ifPresent(cmsContent -> handleCmsContentSave(requestParamMap, cmsContent));
+  }
 
-	public void handleBeforeDownloadFile() throws Exception {
-		this.fileDownload = CmsFileUtils.writeCmsToZipStreamedContent(selectedAppName,
-				appPmvCmsMap.get(selectedAppName));
-	}
+  private void handleCmsContentSave(Map<String, String> requestParamMap, CmsContent cmsContent) {
+    cmsContent.saveContent(requestParamMap.get("contents"));
+    var locale = cmsContent.getLocale();
+    var savedCms = findSavedCms(selectedCms.getUri(), locale);
+    if (savedCms != null) {
+      savedCms.setNewContent(cmsContent.getContent());
+    } else {
+      savedCms = new SavedCms(selectedCms.getUri(), locale.toString(), cmsContent.getOriginalContent(),
+          cmsContent.getContent());
+    }
+    saveCms(savedCms);
+  }
 
-	public void downloadFinished() {
-		showDialog(cms().co("/Labels/Message"), cms().co("/Labels/CmsDownloaded"));
-	}
+  public void setValueChanged() {
+    var context = FacesContext.getCurrentInstance();
+    var requestParamMap = context.getExternalContext().getRequestParameterMap();
+    var languageIndex = valueOf(requestParamMap.get("languageIndex"));
+    selectedCms.getContents().get(languageIndex).setEditting(true);
+  }
 
-	public String getActiveIndex() {
-		return Optional.ofNullable(selectedCms).map(Cms::getContents).map(values -> IntStream
-				.rangeClosed(0, values.size()).mapToObj(Integer::toString).collect(Collectors.joining(",")))
-				.orElse(StringUtils.EMPTY);
-	}
+  public void handleBeforeDownloadFile() throws Exception {
+    this.fileDownload = CmsFileUtils.writeCmsToZipStreamedContent(selectedAppName, appPmvCmsMap.get(selectedAppName));
+  }
 
-	public List<Cms> getFilteredCMSKeys() {
-		return filteredCMSList;
-	}
+  public void downloadFinished() {
+    showDialog(cms().co("/Labels/Message"), cms().co("/Labels/CmsDownloaded"));
+  }
 
-	public void setFilteredCMSKeys(List<Cms> filteredCMSKeys) {
-		this.filteredCMSList = filteredCMSKeys;
-	}
+  public String getActiveIndex() {
+    return Optional.ofNullable(selectedCms).map(Cms::getContents).map(
+        values -> IntStream.rangeClosed(0, values.size()).mapToObj(Integer::toString).collect(Collectors.joining(",")))
+        .orElse(StringUtils.EMPTY);
+  }
 
-	public Cms getSelectedCms() {
-		return selectedCms;
-	}
+  public List<Cms> getFilteredCMSKeys() {
+    return filteredCMSList;
+  }
 
-	public void setSelectedCms(Cms selectedCms) {
-		this.lastSelectedCms = this.selectedCms == null ? selectedCms : this.selectedCms;
-		this.selectedCms = selectedCms;
-	}
+  public void setFilteredCMSKeys(List<Cms> filteredCMSKeys) {
+    this.filteredCMSList = filteredCMSKeys;
+  }
 
-	public boolean isShowOnlyTodo() {
-		return isShowOnlyTodo;
-	}
+  public Cms getSelectedCms() {
+    return selectedCms;
+  }
 
-	public void setShowOnlyTodo(boolean isShowOnlyTodo) {
-		this.isShowOnlyTodo = isShowOnlyTodo;
-	}
+  public void setSelectedCms(Cms selectedCms) {
+    this.lastSelectedCms = this.selectedCms == null ? selectedCms : this.selectedCms;
+    this.selectedCms = selectedCms;
+  }
 
-	public String getSearchKey() {
-		return searchKey;
-	}
+  public boolean isShowOnlyTodo() {
+    return isShowOnlyTodo;
+  }
 
-	public void setSearchKey(String searchKey) {
-		this.searchKey = searchKey;
-	}
+  public void setShowOnlyTodo(boolean isShowOnlyTodo) {
+    this.isShowOnlyTodo = isShowOnlyTodo;
+  }
 
-	public StreamedContent getFileDownload() {
-		return fileDownload;
-	}
+  public String getSearchKey() {
+    return searchKey;
+  }
 
-	public String getSelectedAppName() {
-		return selectedAppName;
-	}
+  public void setSearchKey(String searchKey) {
+    this.searchKey = searchKey;
+  }
 
-	public void setSelectedAppName(String selectedAppName) {
-		this.selectedAppName = selectedAppName;
-	}
+  public StreamedContent getFileDownload() {
+    return fileDownload;
+  }
 
-	public Set<String> getAppNames() {
-		return appPmvCmsMap.keySet();
-	}
+  public String getSelectedAppName() {
+    return selectedAppName;
+  }
+
+  public void setSelectedAppName(String selectedAppName) {
+    this.selectedAppName = selectedAppName;
+  }
+
+  public Set<String> getAppNames() {
+    return appPmvCmsMap.keySet();
+  }
 
 }
