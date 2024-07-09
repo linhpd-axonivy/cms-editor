@@ -39,8 +39,8 @@ import com.axonivy.utils.cmseditor.utils.CmsFileUtils;
 import com.axonivy.utils.cmseditor.utils.Utils;
 
 import ch.ivyteam.ivy.application.ActivityState;
+import ch.ivyteam.ivy.application.IActivity;
 import ch.ivyteam.ivy.application.IProcessModel;
-import ch.ivyteam.ivy.application.IProcessModelVersion;
 import ch.ivyteam.ivy.application.app.IApplicationRepository;
 import ch.ivyteam.ivy.cm.ContentObject;
 import ch.ivyteam.ivy.cm.ContentObjectReader;
@@ -177,11 +177,7 @@ public class CmsEditorBean implements Serializable {
     return cms;
   }
 
-  private static boolean isActive(IProcessModel processModel) {
-    return ActivityState.ACTIVE == processModel.getActivityState();
-  }
-
-  private static boolean isActive(IProcessModelVersion processModelVersion) {
+  private static boolean isActive(IActivity processModelVersion) {
     return processModelVersion != null && ActivityState.ACTIVE == processModelVersion.getActivityState();
   }
 
@@ -219,7 +215,7 @@ public class CmsEditorBean implements Serializable {
   }
 
   private void handleCmsContentSave(Map<String, String> requestParamMap, CmsContent cmsContent) {
-    cmsContent.saveContent(requestParamMap.get("contents"));
+    cmsContent.saveContent(requestParamMap.get("text"), requestParamMap.get("contents"));
     var locale = cmsContent.getLocale();
     var savedCms = findSavedCms(selectedCms.getUri(), locale);
     if (savedCms != null) {

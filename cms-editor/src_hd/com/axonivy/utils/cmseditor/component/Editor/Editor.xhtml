@@ -69,11 +69,15 @@
 
 
 			editor.onSave = (contents, core) => {
-				if(core.functions.getText().trim().length === 0){
+				const text = removeNonPrintableChars(core.functions.getText());
+				if(text.trim().length === 0){
 					core.functions.noticeOpen("The content must not be empty.");
 					return;
 				}
 				saveValue([{
+					name: 'text',
+					value: text
+				},{
 					name: 'contents',
 					value: contents
 				}, {
@@ -82,6 +86,10 @@
 				}]);
 			};
 		};
+
+		function removeNonPrintableChars(str) {
+			return str.replace(/[\u00A0\u0000\u200B]/g, '');
+		}
 	</script>
 </cc:implementation>
 

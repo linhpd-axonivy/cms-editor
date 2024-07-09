@@ -8,6 +8,8 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Converter that can handle POJOs. Can handle each type of object.
  * 
@@ -41,7 +43,7 @@ public class PojoConverter implements Converter {
 
       return hash;
     }
-    return "";
+    return StringUtils.EMPTY;
   }
 
   /**
