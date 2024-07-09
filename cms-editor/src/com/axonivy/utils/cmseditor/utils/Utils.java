@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities.EscapeMode;
+import org.jsoup.parser.Parser;
 
 public class Utils {
 
@@ -15,15 +16,15 @@ public class Utils {
   private static final String UNORDERED_PATTERN = "<ul> %s </ul>";
   private static final String LIST_ITEM_PATTERN = "<li style='padding:0 2rem 0.25rem 0;'> %s </li>";
 
-  public static String sanitizeContent(String originalContent, String text, String content) {
+  public static String sanitizeContent(String originalContent, String content) {
+    var doc = Jsoup.parseBodyFragment(content);
     if (containsHtmlTag(originalContent)) {
-      var originalDoc = Jsoup.parseBodyFragment(content);
-      var doc = Jsoup.parseBodyFragment(content);
+      var originalDoc = Jsoup.parseBodyFragment(originalContent);
       migrateTableAttr(originalDoc, doc);
-      doc.outputSettings().escapeMode(EscapeMode.xhtml).prettyPrint(true);
-      return doc.body().html();
+      doc.outputSettings().escapeMode(EscapeMode.base).prettyPrint(true);
+      return Parser.unescapeEntities(doc.body().html(), false);
     } else {
-      return text;
+      return doc.body().text();
     }
   }
 
@@ -59,4 +60,5 @@ public class Utils {
 
     return String.format(UNORDERED_PATTERN, htmlStringBuilder.toString());
   }
+
 }

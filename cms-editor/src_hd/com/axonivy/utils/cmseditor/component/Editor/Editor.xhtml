@@ -81,15 +81,12 @@
 
 
 			editor.onSave = (contents, core) => {
-				const text = removeNonPrintableChars(core.functions.getText());
-				if(text.trim().length === 0){
+				console.log(contents);
+				if(removeNonPrintableChars(core.functions.getText()).trim().length === 0){
 					core.functions.noticeOpen("The content must not be empty.");
 					return;
 				}
 				saveValue([{
-					name: 'text',
-					value: text
-				},{
 					name: 'contents',
 					value: contents
 				}, {

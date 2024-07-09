@@ -215,7 +215,7 @@ public class CmsEditorBean implements Serializable {
   }
 
   private void handleCmsContentSave(Map<String, String> requestParamMap, CmsContent cmsContent) {
-    cmsContent.saveContent(requestParamMap.get("text"), requestParamMap.get("contents"));
+    cmsContent.saveContent(requestParamMap.get("contents"));
     var locale = cmsContent.getLocale();
     var savedCms = findSavedCms(selectedCms.getUri(), locale);
     if (savedCms != null) {

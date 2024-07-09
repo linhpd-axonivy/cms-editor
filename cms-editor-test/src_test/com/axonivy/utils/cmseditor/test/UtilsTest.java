@@ -29,7 +29,7 @@ public class UtilsTest {
         </table> table.
         <p></p>
         """.trim();
-    String result = Utils.reformatHTML(originalContent, content);
+    String result = Utils.sanitizeContent(originalContent, content);
     assertEquals(expected, result);
   }
 
@@ -39,7 +39,7 @@ public class UtilsTest {
     String content = "Some plain content without HTML.";
 
     String expected = "Some plain content without HTML.";
-    String result = Utils.reformatHTML(originalContent, content);
+    String result = Utils.sanitizeContent(originalContent, content);
 
     assertEquals(expected, result);
   }
@@ -56,16 +56,6 @@ public class UtilsTest {
     String plainString = "This is a plain text.";
 
     assertFalse(Utils.containsHtmlTag(plainString));
-  }
-
-  @Test
-  public void testRemoveTags() {
-    String htmlString = "<p>This is a paragraph.</p>";
-
-    String expected = "This is a paragraph.";
-    String result = Utils.removeTags(htmlString);
-
-    assertEquals(expected, result);
   }
 
   @Test
