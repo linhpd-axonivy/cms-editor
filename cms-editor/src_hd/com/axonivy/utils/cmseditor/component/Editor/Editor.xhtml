@@ -10,6 +10,8 @@
 <cc:interface componentType="IvyComponent">
 	<cc:attribute name="managedBean" required="true" />
 	<cc:attribute name="content" required="true" />
+	<cc:attribute name="languageIndex" required="true" />
+	<cc:attribute name="isFormatButtonListVisible" default="false"/>
 </cc:interface>
 
 <cc:implementation>
@@ -29,7 +31,7 @@
 	</p:inplace>
 
 	<p:remoteCommand autoRun="true" async="true"
-		onstart="initSunEditor(#{cc.attrs.languageIndex}, '#{cc.clientId}:content-editor-id');"
+		onstart="initSunEditor(#{cc.attrs.isFormatButtonListVisible}, #{cc.attrs.languageIndex}, '#{cc.clientId}:content-editor-id');"
 		global="false" partialSubmit="true" immediate="true" process="@none"
 		update="@none" />
 	<p:remoteCommand name="saveValue" global="false" partialSubmit="true"
@@ -39,9 +41,10 @@
 		actionListener="#{cc.attrs.managedBean.setValueChanged}" />
 
 	<script type="text/javascript">
-		function initSunEditor(languageIndex, editorId) {
-			const editor = SUNEDITOR.create(document.getElementById(editorId), {
-				buttonList: [
+		function initSunEditor(isFormatButtonListVisible, languageIndex, editorId) {
+			let buttonList;
+			if(isFormatButtonListVisible){
+				buttonList = [
 					['font', 'fontSize', 'formatBlock'],
 					['paragraphStyle', 'blockquote'],
 					['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
@@ -53,7 +56,16 @@
 					['fullScreen'],
 					['undo', 'redo'],
 					['save']
-				],
+				];
+			}else{
+				buttonList = [
+					['fullScreen'],
+					['undo', 'redo'],
+					['save']
+				];
+			}
+			const editor = SUNEDITOR.create(document.getElementById(editorId), {
+				buttonList: buttonList,
 				attributesWhitelist: {
 					'all': 'style|width|height|role|border|cellspacing|cellpadding|src|alt|href|target'
 				},

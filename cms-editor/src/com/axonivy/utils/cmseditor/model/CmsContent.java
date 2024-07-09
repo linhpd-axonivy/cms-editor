@@ -19,6 +19,8 @@ public class CmsContent implements Serializable {
 
   private boolean isEditting;
 
+  private boolean isHtml;
+
   public CmsContent(int index, Locale locale, String content) {
     super();
     this.index = index;
@@ -26,6 +28,7 @@ public class CmsContent implements Serializable {
     this.originalContent = content;
     this.content = content;
     this.isEditting = false;
+    this.isHtml = Utils.containsHtmlTag(originalContent);
   }
 
   public int getIndex() {
@@ -71,6 +74,10 @@ public class CmsContent implements Serializable {
 
   public void setOriginalContent(String originalContent) {
     this.originalContent = originalContent;
+  }
+
+  public boolean isHtml() {
+    return isHtml;
   }
 
 }
