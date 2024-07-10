@@ -81,7 +81,6 @@
 
 
 			editor.onSave = (contents, core) => {
-				console.log(contents);
 				if(removeNonPrintableChars(core.functions.getText()).trim().length === 0){
 					core.functions.noticeOpen("The content must not be empty.");
 					return;

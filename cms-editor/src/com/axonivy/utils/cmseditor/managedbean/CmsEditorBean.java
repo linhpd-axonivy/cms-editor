@@ -132,7 +132,7 @@ public class CmsEditorBean implements Serializable {
 
   public void getAllChildren(String appName, String pmvName, ContentObject contentObject, List<Locale> locales) {
     // Exclude the CMS of it self
-    if (pmvName.equals(CMS_EDITOR_PMV_NAME)) {
+    if (StringUtils.contains(pmvName, CMS_EDITOR_PMV_NAME)) {
       return;
     }
     if (contentObject.isRoot()) {
