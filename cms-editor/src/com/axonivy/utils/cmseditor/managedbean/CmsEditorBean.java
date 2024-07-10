@@ -57,6 +57,7 @@ public class CmsEditorBean implements Serializable {
   private static final String CONTENT_FORM_TABLE_CMS_KEYS = "content-form:table-cms-keys";
   private static final String TODO = "TODO";
   private static final String CMS_EDITOR_PMV_NAME = "cms-editor";
+  private static final String CMS_EDITOR_DEMO_PMV_NAME = "cms-editor-demo";
 
   private Map<String, Map<String, PmvCms>> appPmvCmsMap;
   private Map<String, Map<String, SavedCms>> savedCmsMap;
@@ -132,7 +133,8 @@ public class CmsEditorBean implements Serializable {
 
   public void getAllChildren(String appName, String pmvName, ContentObject contentObject, List<Locale> locales) {
     // Exclude the CMS of it self
-    if (StringUtils.contains(pmvName, CMS_EDITOR_PMV_NAME)) {
+    if (StringUtils.contains(pmvName, CMS_EDITOR_PMV_NAME)
+        && !StringUtils.contains(pmvName, CMS_EDITOR_DEMO_PMV_NAME)) {
       return;
     }
     if (contentObject.isRoot()) {
