@@ -4,7 +4,7 @@ com:
       cmseditor:
         demo:
           EmailFormat: |2-
-                  <p>Hello,</p>
+                  TODO <p>Hello,</p>
                   <p>Welcome to our CMS Editor! Here are some key features and functionalities:</p>
                   <ul>
                      <li><strong>WYSIWYG Editor:</strong> Allows for easy and intuitive content translation.</li>
@@ -58,4 +58,4 @@ com:
                   <p>Best regards,<br>
                      The CMS Editor Team
                   </p>
-          TODO: The content after TODO should be translated. You can click Options > Show only TODO to show all of them.
+          TODO: TODO The content after TODO should be translated. You can click Options > Show only TODO to show all of them.

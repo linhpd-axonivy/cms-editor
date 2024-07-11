@@ -1,9 +1,17 @@
+# CMS Editor
+In AxonIvy, languages for UIs, notifications, or emails are managed within the CMS. We are excited to introduce the new CMS editor that significantly simplifies language editing! The key features are:
 
-# 1. CMS editor process start:
+- User-friendly editor for translating new languages
+- Edit an unlimited number of languages
+- Simple styles available
+- No HTML tags needed in the translation text
+
+## Demo
+### 1. CMS editor process start:
 
 ![](./images/1-cms-editor-process.png)
 
-# 2. CMS editor main page:
+### 2. CMS editor main page:
 
 1. Application Selector: Each Ivy engine can contain multiple applications. First, choose the application you want to work on.
 2. Search Input: You can enter text to search by URI and content. The search is case-insensitive.
