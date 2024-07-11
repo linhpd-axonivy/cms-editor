@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.axonivy.utils.cmseditor</groupId>
 	<artifactId>cms-editor-demo</artifactId>
-	<version>10.0.1-SNAPSHOT</version>
+	<version>11.0.1-SNAPSHOT</version>
 	<packaging>iar</packaging>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.axonivy.utils.cmseditor</groupId>
 			<artifactId>cms-editor</artifactId>
-			<version>10.0.1-SNAPSHOT</version>
+			<version>11.0.1-SNAPSHOT</version>
 			<type>iar</type>
 		</dependency>
 	</dependencies>

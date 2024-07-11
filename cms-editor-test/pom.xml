@@ -3,13 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.axonivy.utils.cmseditor</groupId>
 	<artifactId>cms-editor-test</artifactId>
-	<version>10.0.1-SNAPSHOT</version>
+	<version>11.0.1-SNAPSHOT</version>
 	<packaging>iar-integration-test</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>com.axonivy.utils.cmseditor</groupId>
 			<artifactId>cms-editor</artifactId>
-			<version>10.0.1-SNAPSHOT</version>
+			<version>11.0.1-SNAPSHOT</version>
 			<type>iar</type>
 		</dependency>
 		<dependency>
