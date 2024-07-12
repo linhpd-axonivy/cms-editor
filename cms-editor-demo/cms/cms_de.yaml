@@ -3,59 +3,59 @@ com:
     utils:
       cmseditor:
         demo:
-          EmailFormat: |2-
-                  TODO <p>Hello,</p>
-                  <p>Welcome to our CMS Editor! Here are some key features and functionalities:</p>
-                  <ul>
-                     <li><strong>WYSIWYG Editor:</strong> Allows for easy and intuitive content translation.</li>
-                     <li><strong>Collaboration:</strong> Translators can work sequentially, ensuring quality and consistency.</li>
-                     <li><strong>Export:</strong> Translated content can be exported as a zip file.</li>
-                  </ul>
-                  <p>For more information, please visit our <a href="https://market.axonivy.com/">website</a>.</p>
-                  <p>Explore our current and future features:</p>
-                  <table border="1" cellspacing="0" cellpadding="5">
-                     <thead>
-                        <tr>
-                           <th>Feature</th>
-                           <th>Current</th>
-                           <th>Future</th>
-                        </tr>
-                     </thead>
-                     <tbody>
-                        <tr>
-                           <td>Collaboration</td>
-                           <td>Sequential work by multiple translators</td>
-                           <td>Enhanced collaboration tools</td>
-                        </tr>
-                        <tr>
-                           <td>Export Options</td>
-                           <td>Export as zip file</td>
-                           <td>Direct publishing to platforms</td>
-                        </tr>
-                        <tr>
-                           <td>Real-Time Collaboration</td>
-                           <td>N/A</td>
-                           <td>Real-time collaboration</td>
-                        </tr>
-                        <tr>
-                           <td>User Interface</td>
-                           <td>WYSIWYG Editor</td>
-                           <td>Improved UI/UX design</td>
-                        </tr>
-                        <tr>
-                           <td>Backup</td>
-                           <td>Manual backups</td>
-                           <td>Automated backups</td>
-                        </tr>
-                        <tr>
-                           <td>Version Control</td>
-                           <td>N/A</td>
-                           <td>Version control for tracking changes</td>
-                        </tr>
-                     </tbody>
-                  </table>
-                  <p>Thank you for using our CMS Editor!</p>
-                  <p>Best regards,<br>
-                     The CMS Editor Team
-                  </p>
+          EmailFormat: |
+            <p>Hallo,</p>
+            <p>Willkommen bei unserem CMS-Editor! Hier sind einige Hauptfunktionen und -eigenschaften:</p>
+            <ul>
+               <li><strong>WYSIWYG-Editor:</strong> Ermöglicht eine einfache und intuitive Inhaltsübersetzung.</li>
+               <li><strong>Zusammenarbeit:</strong> Übersetzer können nacheinander arbeiten und so Qualität und Konsistenz sicherstellen.</li>
+               <li><strong>Export:</strong> Übersetzte Inhalte können als Zip-Datei exportiert werden.</li>
+            </ul>
+            <p>Für weitere Informationen besuchen Sie bitte unsere <a href="https://market.axonivy.com/">Website</a>.</p>
+            <p>Entdecken Sie unsere aktuellen und zukünftigen Funktionen:</p>
+            <table border="1" cellspacing="0" cellpadding="5">
+               <thead>
+                  <tr>
+                     <th>Funktion</th>
+                     <th>Aktuell</th>
+                     <th>Zukunft</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr>
+                     <td>Zusammenarbeit</td>
+                     <td>Nacheinanderarbeit von mehreren Übersetzern</td>
+                     <td>Verbesserte Kollaborationswerkzeuge</td>
+                  </tr>
+                  <tr>
+                     <td>Exportoptionen</td>
+                     <td>Export als Zip-Datei</td>
+                     <td>Direkte Veröffentlichung auf Plattformen</td>
+                  </tr>
+                  <tr>
+                     <td>Echtzeit-Zusammenarbeit</td>
+                     <td>N/A</td>
+                     <td>Echtzeit-Zusammenarbeit</td>
+                  </tr>
+                  <tr>
+                     <td>Benutzeroberfläche</td>
+                     <td>WYSIWYG-Editor</td>
+                     <td>Verbesserte UI/UX-Design</td>
+                  </tr>
+                  <tr>
+                     <td>Sicherung</td>
+                     <td>Manuelle Sicherungen</td>
+                     <td>Automatisierte Sicherungen</td>
+                  </tr>
+                  <tr>
+                     <td>Versionskontrolle</td>
+                     <td>N/A</td>
+                     <td>Versionskontrolle zur Nachverfolgung von Änderungen</td>
+                  </tr>
+               </tbody>
+            </table>
+            <p>Vielen Dank, dass Sie unseren CMS-Editor verwenden!</p>
+            <p>Mit freundlichen Grüßen,<br>
+               Das CMS-Editor-Team
+            </p>
           TODO: TODO The content after TODO should be translated. You can click Options > Show only TODO to show all of them.

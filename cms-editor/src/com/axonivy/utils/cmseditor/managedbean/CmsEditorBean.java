@@ -193,7 +193,7 @@ public class CmsEditorBean implements Serializable {
 
   private boolean isTodoCms(Cms entry) {
     if (isShowOnlyTodo) {
-      return entry.getContents().stream().anyMatch(value -> StringUtils.startsWithIgnoreCase(value.getContent(), TODO));
+      return entry.getContents().stream().anyMatch(value -> StringUtils.containsIgnoreCase(value.getContent(), TODO));
     }
     return true;
   }
