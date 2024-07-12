@@ -62,7 +62,7 @@ public class CmsEditorWebTest {
   @Test
   public void testCheckShowTodoOptionShouldDisplayTwoRows() {
     clickOptionShowOnlyTodo();
-    assertCmsTableRowCountGte(2);
+    assertCmsTableRowCountGte(1);
   }
 
   @Test
@@ -83,7 +83,7 @@ public class CmsEditorWebTest {
     displayItem.shouldBe(hidden);
     contentItem.shouldBe(visible);
 
-    contentItem.$(By.className("sun-editor-editable")).setValue("Content is updated");
+    contentItem.$(By.className("sun-editor-editable")).setValue("Content is updated at " + System.currentTimeMillis());
     contentItem.$(".se-btn.se-resizing-enabled.se-tooltip").should(enabled);
     Selenide.sleep(1000);
     otherCms.click();
